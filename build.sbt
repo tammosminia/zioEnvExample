@@ -15,6 +15,7 @@ lazy val root = (project in file("."))
     ),
     scalacOptions ++= Seq(
       "-language:postfixOps",
-      "-language:implicitConversions"
+      "-language:implicitConversions",
+      "-deprecation"
     )
   )
