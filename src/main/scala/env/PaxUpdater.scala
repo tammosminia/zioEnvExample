@@ -1,3 +1,5 @@
+package env
+
 import zio.RIO
 
 object PaxUpdater {

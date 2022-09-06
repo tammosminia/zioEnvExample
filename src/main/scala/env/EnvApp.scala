@@ -1,6 +1,8 @@
+package env
+
 import zio.{RIO, Schedule, ZIOAppDefault, ZLayer, durationInt}
 
-object Example extends ZIOAppDefault {
+object EnvApp extends ZIOAppDefault {
   def run = for {
     _ <- zio.Console.printLine("Example app start")
     appConfig = AppConfig("flightHost", "paxHost", "redisHost")

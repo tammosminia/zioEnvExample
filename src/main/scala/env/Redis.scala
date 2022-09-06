@@ -1,3 +1,5 @@
+package env
+
 import zio.{RIO, Scope, ZIO, ZLayer}
 
 class Redis(config: String) {
