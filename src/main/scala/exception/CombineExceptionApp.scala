@@ -17,7 +17,7 @@ object CombineExceptionApp extends ZIOAppDefault {
 
   def parse(s: String): ZIO[Any, ParseException, Int] = ZIO.attempt(s.toInt).mapError(t => ParseException(t.getMessage))
 
-  def readAndParse: ZIO[Any, Product, Int] = for {
+  def readAndParse: ZIO[Any, ReadFileException | ParseException, Int] = for {
     content <- readFile
     parsed <- parse(content)
   } yield parsed
