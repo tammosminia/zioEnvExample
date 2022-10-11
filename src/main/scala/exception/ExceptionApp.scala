@@ -1,6 +1,8 @@
 package exception
 
-import zio.{RIO, Schedule, Task, ZIO, ZIOAppDefault, ZLayer, durationInt, Console}
+import zio.{Console, RIO, Schedule, Task, ZIO, ZIOAppDefault, ZLayer, durationInt}
+
+import java.io.IOException
 
 object ExceptionApp extends ZIOAppDefault {
   def run = for {
@@ -9,7 +11,7 @@ object ExceptionApp extends ZIOAppDefault {
     _ <- zio.Console.printLine("Example app end")
   } yield ()
 
-  def safe(i: Int): Task[Unit] =
+  def safe(i: Int): ZIO[Any, IOException, Unit] =
     (DangerousCode.danger(i) *> Console.printLine("ok"))
       .catchAll(t => Console.printLine(s"caught failure $t"))
       .catchAllDefect(t => Console.printLine(s"caught defect $t"))
