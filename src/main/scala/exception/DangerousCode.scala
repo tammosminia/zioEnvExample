@@ -13,7 +13,7 @@ object DangerousCode {
     case 6 => ZIO.attempt(throw new StackOverflowError("Fatal error that cannot be caught."))
   }
 
-  def uncaught: Task[Unit] = for {
+  def uncaught: ZIO[Any, Nothing, Unit] = for {
     u <- ZIO.unit
   } yield throw new RuntimeException("uncaught exception")
 }
