@@ -1,6 +1,6 @@
 package exception
 
-import zio.{Console, RIO, Schedule, Task, ZIO, ZIOAppDefault, ZLayer, durationInt}
+import zio._
 
 object DangerousCode {
   def danger(i: Int): Task[Unit] = i match {

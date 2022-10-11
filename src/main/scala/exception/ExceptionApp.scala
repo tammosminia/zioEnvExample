@@ -10,8 +10,7 @@ object ExceptionApp extends ZIOAppDefault {
   } yield ()
 
   def safe(i: Int): Task[Unit] =
-    DangerousCode.danger(i)
+    (DangerousCode.danger(i) *> Console.printLine("ok"))
       .catchAll(t => Console.printLine(s"caught failure $t"))
       .catchAllDefect(t => Console.printLine(s"caught defect $t"))
-
 }
