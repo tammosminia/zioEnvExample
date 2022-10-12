@@ -12,6 +12,4 @@ object CauseApp extends ZIOAppDefault {
   def safe(i: Int): Task[Unit] =
     DangerousCode.danger(i)
       .catchAllCause(c => Console.printLine(s"caught cause $c"))
-      .catchAllDefect(t => Console.printLine(s"caught a defect $t"))
-
 }
