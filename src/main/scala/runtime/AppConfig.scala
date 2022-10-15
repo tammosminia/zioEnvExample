@@ -6,7 +6,11 @@ import zio.{Task, ZLayer, ZIO}
 case class AppConfig(database: String)
 
 object AppConfig {
-  def read: Task[AppConfig] = ZIO.attempt(AppConfig("databaseHost"))
-  def layer: ZLayer[Any, Throwable, AppConfig] = ZLayer.apply(read)
+  def read: AppConfig = {
+    println("reading AppConfig")
+    AppConfig("databaseHost")
+  }
+  def make: Task[AppConfig] = ZIO.attempt(read)
+  def layer: ZLayer[Any, Throwable, AppConfig] = ZLayer.apply(make)
 }
 
