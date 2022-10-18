@@ -6,11 +6,10 @@ object UpdateRuntimeApp2 extends App {
   Unsafe.unsafe { implicit unsafe =>
     Console.println("Example app start")
     val runtime: Runtime.Scoped[AppConfig] = zio.Runtime.unsafe.fromLayer(AppConfig.layer)
-    val updatedRuntime = runtime.unsafe.run {
-      val z1: ZIO[AppConfig with Scope, Throwable, ZEnvironment[Database]] = Database.layer.build
-        val z: ZIO[AppConfig with Scope, Throwable, Runtime.Scoped[AppConfig with Database]] = z1.map(dbe => runtime.mapEnvironment(_ ++ dbe))
-      z
+    val dbEnv: ZEnvironment[Database] = runtime.unsafe.run {
+      Database.layer.build(Scope.global)
     }.getOrThrowFiberFailure()
+    val updatedRuntime: Runtime.Scoped[AppConfig with Database] = runtime.mapEnvironment(_ ++ dbEnv)
     run()
     run()
     updatedRuntime.unsafe.shutdown()

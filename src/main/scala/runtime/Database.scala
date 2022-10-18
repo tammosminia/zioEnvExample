@@ -1,10 +1,10 @@
 package runtime
 
-import zio.{RIO, Scope, ZIO, ZLayer}
+import zio.{RIO, Scope, ZIO, ZLayer, Console}
 
 class Database(config: String) {
   println(s"opening Database connection")
-  def write(domain: String): RIO[Any, Unit] = ZIO.succeed(())
+  def write(domain: String): RIO[Any, Unit] = Console.printLine(s"writing $domain")
   def close(): Unit = println("closing Database connection")
 }
 
