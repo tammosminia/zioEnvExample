@@ -2,7 +2,7 @@ package runtime
 
 import zio.{RIO, Runtime, Unsafe, ZLayer, durationInt}
 
-object RuntimeFromLayerApp2 extends App {
+object RuntimeFromLayerHybrid extends App {
   Unsafe.unsafe { implicit unsafe =>
     Console.println("Example app start")
     val runtime: Runtime.Scoped[AppConfig] = zio.Runtime.unsafe.fromLayer(AppConfig.layer)
