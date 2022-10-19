@@ -9,7 +9,7 @@ object UpdateRuntimeAppWithUserId extends App {
     case class UserId(id: String)
     case class TrackingId(id: Int)
     val userId = UserId("123")
-    val updatedRuntime = runtime.mapEnvironment(_.add(userId))
+    val updatedRuntime: Runtime.Scoped[Database with UserId] = runtime.mapEnvironment(_.add(userId))
     run(TrackingId(1))
     run(TrackingId(2))
     updatedRuntime.unsafe.shutdown()
