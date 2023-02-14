@@ -4,43 +4,60 @@ import zio.{Console, RIO, Schedule, Task, ZIO, ZIOAppDefault, ZLayer, durationIn
 
 import java.io.IOException
 
-object ExceptionApp extends App {
-  def handleException(t: Throwable): Int = {
-    println(t)
-    0
-  }
-
-  object Ex {
+object ExceptionApp {
+  object UseException {
     def f1: Int = throw new RuntimeException("exceptional problems")
     def f2(i: Int): Int = i + 1
 
-    f2(f1)
-    def exception: Int = try {
+    def combined: Int = {
       val a = f1
       f2(a)
+    }
+
+    def handled: Int = try {
+      combined
     } catch {
-      case t: Throwable => handleException(t)
+      case t: Throwable => 0
     }
   }
 
-  object Ei {
+  object UseEither {
     def f1: Either[Exception, Int] = Left(new RuntimeException("either problems"))
     def f2(i: Int): Either[Exception, Int] = Right(i + 1)
 
-    def either: Int = (for {
+    def combined: Either[Exception, Int] = for {
       a <- f1
       r <- f2(a)
-    } yield r).fold(handleException, identity)
+    } yield r
+
+    def handled: Int = combined.fold(t => 0, identity)
   }
 
-  object Z {
+  object UseZIO {
     def f1: Task[Int] = ZIO.fail(new RuntimeException("zio problems"))
     def f2(i: Int): Task[Int] = ZIO.succeed(i + 1)
 
-    def zio: Task[Int] = (for {
+    def combined: Task[Int] = for {
       a <- f1
       r <- f2(a)
-    } yield r).catchAll(t => ZIO.attempt(handleException(t)))
+    } yield r
+
+    def handled: Task[Int] = combined.catchAll(t => ZIO.succeed(0))
+  }
+
+  object EitherWithSpecificExceptions {
+    class GenerateError
+    class AddError
+
+    def f1: Either[GenerateError, Int] = Left(new GenerateError)
+    def f2(i: Int): Either[AddError, Int] = Right(i + 1)
+
+    def combined: Either[GenerateError | AddError, Int] = for {
+      a <- f1
+      r <- f2(a)
+    } yield r
+
+    def handled: Int = combined.fold(t => 0, identity)
   }
 
 }
