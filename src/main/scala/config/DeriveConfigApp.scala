@@ -7,13 +7,13 @@ import zio.{Config, ZIO, ZIOAppDefault}
 
 import java.nio.file.Paths
 
-
-
 object DeriveConfigApp extends ZIOAppDefault {
   case class CoffeeConfig(ingredients: List[String], brewSeconds: Int)
   case class AppConfig(coffee: CoffeeConfig)
 
-  implicit val coffeeConfigDescriptor: Config[CoffeeConfig] = deriveConfig[CoffeeConfig]
+//  This is not used in deriveConfig[AppConfig]
+//  implicit val stringListDescriptor: Config[List[String]] = deriveConfig[String].map(_.split(",").toList)
+  implicit val stringListDescriptor: DeriveConfig[List[String]] = DeriveConfig[String].map(_.split(",").toList)
   implicit val appConfigDescriptor: Config[AppConfig] = deriveConfig[AppConfig]
 
   def readResource[A](filePath: String)(implicit config: Config[A]): ZIO[Any, Config.Error, A] = {
@@ -25,9 +25,10 @@ object DeriveConfigApp extends ZIOAppDefault {
   def run = for {
     appConfig <- readResource[AppConfig]("app.conf")
     coffee = appConfig.coffee
-    _ <- ZIO.logInfo("start brewing coffee")
-    _ <- ZIO.foreach(coffee.ingredients)(i => ZIO.logInfo(s"adding ingredient: $i"))
-    _ <- ZIO.logInfo(s"waiting for ${coffee.brewSeconds} seconds")
-    _ <- ZIO.logInfo(s"done. enjoy!")
+    console <- ZIO.console
+    _ <- console.printLine("start brewing coffee")
+    _ <- ZIO.foreach(coffee.ingredients)(i => console.printLine(s"adding ingredient: $i"))
+    _ <- console.printLine(s"waiting for ${coffee.brewSeconds} seconds")
+    _ <- console.printLine(s"done. enjoy!")
   } yield ()
 }
