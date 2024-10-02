@@ -8,7 +8,7 @@ import zio.{Config, ZIO, ZIOAppDefault}
 import java.nio.file.Paths
 
 object DeriveConfigApp extends ZIOAppDefault {
-  case class CoffeeConfig(ingredients: List[String], brewSeconds: Int)
+  case class CoffeeConfig(ingredients: List[String], brewTime: zio.Duration)
   case class AppConfig(coffee: CoffeeConfig)
 
 //  This is not used in deriveConfig[AppConfig]
@@ -28,7 +28,7 @@ object DeriveConfigApp extends ZIOAppDefault {
     console <- ZIO.console
     _ <- console.printLine("start brewing coffee")
     _ <- ZIO.foreach(coffee.ingredients)(i => console.printLine(s"adding ingredient: $i"))
-    _ <- console.printLine(s"waiting for ${coffee.brewSeconds} seconds")
+    _ <- console.printLine(s"waiting for ${coffee.brewTime.getSeconds} seconds")
     _ <- console.printLine(s"done. enjoy!")
   } yield ()
 }
